@@ -65,7 +65,7 @@ public class RTS_Unit : MonoBehaviour
 
     private bool _isFindingPath = false;
 
-    private float _timeout = 0.5f;
+    private float _timeout = 1f;
 
     private RTS_Tile _currentTile;
 
@@ -73,8 +73,11 @@ public class RTS_Unit : MonoBehaviour
 
     private List<RTS_Tile> _targets = new List<RTS_Tile>();
 
-    public void MoveTo(RTS_Tile targetTile)
+    public void MoveTo(RTS_Tile targetTile, bool force = true)
     {
+        if (force)
+            _targets.Clear();
+
         if (_path != null)
             _path.Clear();
 
@@ -109,7 +112,7 @@ public class RTS_Unit : MonoBehaviour
                 //Debug.Log($"target {i} = {p.x}; {p.y}");
             }
 
-            if (_targets.Count > 0)
+            if (!_targets.Contains(targetTile))
                 _targets.Add(targetTile);
         }
 
@@ -159,7 +162,7 @@ public class RTS_Unit : MonoBehaviour
                     _targets.Remove(currentTarget);
 
                     if (_targets.Count > 0)
-                        MoveTo(_targets.FirstOrDefault());
+                        MoveTo(_targets.FirstOrDefault(), force: false);
                 }
             }
         }
@@ -169,7 +172,7 @@ public class RTS_Unit : MonoBehaviour
             {
                 _timeout = 0.5f;
 
-                MoveTo(_targets.FirstOrDefault());
+                MoveTo(_targets.FirstOrDefault(), force: false);
             }
             else
             {
